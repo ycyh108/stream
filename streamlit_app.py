@@ -58,7 +58,10 @@ bad_rate_df["불량률(%)"] = bad_rate_df["불량여부"] * 100
 fig_bad = px.bar(bad_rate_df, x="설비", y="불량률(%)", text_auto=True)
 st.plotly_chart(fig_bad)
 
-# 4. 설비별 시계열
-st.subheader("설비별 시계열(측정값)")
-fig_time = px.scatter(filtered, x="날짜", y="측정값", color="설비", markers=True)
+st.subheader("설비별 시계열(측정값, 산점도)")
+fig_time = px.scatter(
+    filtered, x="날짜", y="측정값", color="설비",
+    hover_data=["Lot", "Wafer"],  # 추가 정보
+    title="설비별 측정값 산점도 (날짜 기준)"
+)
 st.plotly_chart(fig_time)
