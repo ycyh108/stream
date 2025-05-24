@@ -36,32 +36,32 @@ df['불량여부'] = ((df['측정값'] < lsl) | (df['측정값'] > usl)).astype(
 
 st.title("설비별 품질 통계 시각화 데모")
 
-# 설비 선택
-equipments = st.multiselect("설비 선택", df['설비'].unique(), default=df['설비'].unique())
-filtered = df[df['설비'].isin(equipments)]
-
-# 1. 설비별 Boxplot
-st.subheader("설비별 측정값 분포(Boxplot)")
-fig_box = px.box(filtered, x="설비", y="측정값", points="all")
-st.plotly_chart(fig_box)
+with col1:
+    st.subheader("설비별 측정값 분포(Boxplot)")
+    fig_box = px.box(filtered, x="설비", y="측정값", points="all", title="설비별 Boxplot")
+    st.plotly_chart(fig_box, use_container_width=True)
 
 # 2. 설비별 평균값 Bar Chart
-st.subheader("설비별 평균값")
-mean_df = filtered.groupby("설비")["측정값"].mean().reset_index()
-fig_mean = px.bar(mean_df, x="설비", y="측정값", text_auto=True)
-st.plotly_chart(fig_mean)
+with col2:
+    st.subheader("설비별 평균값")
+    mean_df = filtered.groupby("설비")["측정값"].mean().reset_index()
+    fig_mean = px.bar(mean_df, x="설비", y="측정값", text_auto=True, title="설비별 평균")
+    st.plotly_chart(fig_mean, use_container_width=True)
 
 # 3. 설비별 불량률 Bar Chart
-st.subheader("설비별 불량률")
-bad_rate_df = filtered.groupby("설비")["불량여부"].mean().reset_index()
-bad_rate_df["불량률(%)"] = bad_rate_df["불량여부"] * 100
-fig_bad = px.bar(bad_rate_df, x="설비", y="불량률(%)", text_auto=True)
-st.plotly_chart(fig_bad)
+with col3:
+    st.subheader("설비별 불량률")
+    bad_rate_df = filtered.groupby("설비")["불량여부"].mean().reset_index()
+    bad_rate_df["불량률(%)"] = bad_rate_df["불량여부"] * 100
+    fig_bad = px.bar(bad_rate_df, x="설비", y="불량률(%)", text_auto=True, title="설비별 불량률")
+    st.plotly_chart(fig_bad, use_container_width=True)
 
-st.subheader("설비별 시계열(측정값, 산점도)")
-fig_time = px.scatter(
-    filtered, x="날짜", y="측정값", color="설비",
-    hover_data=["Lot", "Wafer"],  # 추가 정보
-    title="설비별 측정값 산점도 (날짜 기준)"
-)
-st.plotly_chart(fig_time)
+# 4. 설비별 시계열 산점도
+with col4:
+    st.subheader("설비별 시계열(측정값, 산점도)")
+    fig_time = px.scatter(
+        filtered, x="날짜", y="측정값", color="설비",
+        hover_data=["Lot", "Wafer"],
+        title="설비별 측정값 산점도"
+    )
+    st.plotly_chart(fig_time, use_container_width=True)
