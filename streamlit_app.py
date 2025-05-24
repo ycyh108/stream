@@ -1,14 +1,38 @@
 import pandas as pd
 import plotly.express as px
 import streamlit as st
+import numpy as np
 
-# 예시 데이터프레임
+np.random.seed(42)  # 재현성
+
+# 설비 5대, Lot 30개, Wafer 10개씩, 날짜는 한 달치로 분포
+n_data = 3000
+equipments = [f'Equip_{i}' for i in range(1, 6)]
+lots = [f'Lot_{i}' for i in range(101, 131)]
+wafers = [f'W{i:02d}' for i in range(1, 11)]
+
 df = pd.DataFrame({
-    '설비': ['A', 'A', 'B', 'B', 'C', 'C', 'A', 'B', 'C'],
-    '측정값': [10.2, 10.5, 11.3, 10.8, 10.9, 11.1, 10.7, 11.0, 10.8],
-    '불량여부': [0, 1, 0, 0, 0, 1, 0, 0, 0],
-    '날짜': pd.date_range('2024-05-01', periods=9)
+    '설비': np.random.choice(equipments, n_data),
+    'Lot': np.random.choice(lots, n_data),
+    'Wafer': np.random.choice(wafers, n_data),
+    '날짜': pd.to_datetime('2024-05-01') + pd.to_timedelta(np.random.randint(0, 30, n_data), unit='D'),
 })
+
+# 측정값(μm): 설비별로 살짝 다른 평균, 불량은 일부러 생성
+equip_means = {equip: 10.0 + i*0.2 for i, equip in enumerate(equipments)}
+df['측정값'] = [np.random.normal(loc=equip_means[e], scale=0.15) for e in df['설비']]
+
+# LSL/USL, 불량여부
+target = 10.5
+lsl = 10.2
+usl = 10.8
+df['불량여부'] = ((df['측정값'] < lsl) | (df['측정값'] > usl)).astype(int)
+
+# 랜덤하게 일부러 외란(불량 데이터) 추가
+n_outlier = int(0.01 * n_data)
+outlier_indices = np.random.choice(df.index, n_outlier, replace=False)
+df.loc[outlier_indices, '측정값'] = np.random.uniform(9.8, 11.3, n_outlier)
+df['불량여부'] = ((df['측정값'] < lsl) | (df['측정값'] > usl)).astype(int)
 
 st.title("설비별 품질 통계 시각화 데모")
 
