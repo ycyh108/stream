@@ -56,10 +56,11 @@ with col1:
     )
     selected_points = plotly_events(
         fig_time,
-        click_event=True, select_event=True,
-        use_container_width=True,
-        override_height=420,
+        click_event=True,
+        select_event=True,
+        use_container_width=True
     )
+
 
 # -------------- 5. 선택/브러싱 데이터 추출 --------------
 if selected_points:
