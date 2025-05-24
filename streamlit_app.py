@@ -35,6 +35,13 @@ df.loc[outlier_indices, '측정값'] = np.random.uniform(9.8, 11.3, n_outlier)
 df['불량여부'] = ((df['측정값'] < lsl) | (df['측정값'] > usl)).astype(int)
 
 st.title("설비별 품질 통계 시각화 데모")
+# 설비 선택
+equipments = st.multiselect("설비 선택", df['설비'].unique(), default=df['설비'].unique())
+filtered = df[df['설비'].isin(equipments)]
+
+# 2x2 컬럼 그리드 만들기
+col1, col2 = st.columns(2)
+col3, col4 = st.columns(2)
 
 with col1:
     st.subheader("설비별 측정값 분포(Boxplot)")
