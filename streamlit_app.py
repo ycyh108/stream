@@ -57,8 +57,7 @@ with col1:
     selected_points = plotly_events(
         fig_time,
         click_event=True,
-        select_event=True,
-        use_container_width=True
+        select_event=True
     )
 
 
