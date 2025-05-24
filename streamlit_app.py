@@ -60,5 +60,5 @@ st.plotly_chart(fig_bad)
 
 # 4. 설비별 시계열
 st.subheader("설비별 시계열(측정값)")
-fig_time = px.line(filtered, x="날짜", y="측정값", color="설비", markers=True)
+fig_time = px.scatter(filtered, x="날짜", y="측정값", color="설비", markers=True)
 st.plotly_chart(fig_time)
